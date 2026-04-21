@@ -10,6 +10,12 @@ from data import BASE_URL
 
 
 class DeskPage(BasePage):
+    def get_registration_error_text(self):
+        # Попробуем получить текст ошибки, если она появляется в попапе
+        try:
+            return self.get_text(AuthPopupLocators.ERROR_MODAL_TITLE)
+        except Exception:
+            return None
     def open_home_page(self):
         self.open(BASE_URL)
 
@@ -77,7 +83,7 @@ class DeskPage(BasePage):
 
     def select_used_condition(self):
         element = self.wait_present(CreateListingPageLocators.USED_CONDITION_INPUT)
-        self.driver.execute_script("arguments[0].click();", element)
+        self.execute_script("arguments[0].click();", element)
 
     def create_listing(self, listing_data):
         self.open_create_listing_page()
@@ -96,7 +102,7 @@ class DeskPage(BasePage):
             listing_data["city"],
         )
         self.select_used_condition()
-        current_url = self.driver.current_url
+        current_url = self.get_current_url()
         self.click(CreateListingPageLocators.PUBLISH_BUTTON)
         self.wait_url_changes(current_url)
 
@@ -110,9 +116,6 @@ class DeskPage(BasePage):
 
     def get_profile_name(self):
         return self.get_attribute(ProfilePageLocators.NAME_INPUT, "value")
-
-    def get_email_error_text(self):
-        return "Ошибка"
 
     def get_unauthorized_listing_text(self):
         return self.get_text(MainPageLocators.UNAUTHORIZED_POST_TITLE)
@@ -128,18 +131,10 @@ class DeskPage(BasePage):
         }
 
     def are_registration_fields_highlighted(self, initial_colors, error_colors):
-        colors_changed = (
-            error_colors["email"] != initial_colors["email"]
-            and error_colors["password"] != initial_colors["password"]
-            and error_colors["repeat_password"] != initial_colors["repeat_password"]
-            and error_colors["email"] == error_colors["password"]
-            and error_colors["password"] == error_colors["repeat_password"]
-        )
-        return colors_changed or (
-            self.is_visible(AuthPopupLocators.EMAIL_INPUT)
-            and self.is_visible(AuthPopupLocators.PASSWORD_INPUT)
-            and self.is_visible(AuthPopupLocators.REPEAT_PASSWORD_INPUT)
-        )
+        print(f"Initial colors: {initial_colors}")
+        print(f"Error colors: {error_colors}")
+        # Считаем, что поле подсвечено, если цвет изменился хотя бы у одного поля
+        return any(error_colors[field] != initial_colors[field] for field in error_colors)
 
     def is_authorized(self):
         return self.is_visible(MainPageLocators.AVATAR_BUTTON) and self.is_visible(

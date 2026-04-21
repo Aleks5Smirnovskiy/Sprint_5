@@ -1,7 +1,7 @@
 import pytest
 from selenium import webdriver
 
-from data import build_listing_payload, build_user_credentials
+from helpers import build_listing_payload, build_user_credentials
 from page_objects.desk_page import DeskPage
 
 

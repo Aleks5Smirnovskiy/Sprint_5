@@ -1,4 +1,4 @@
-from data import DEFAULT_USER_NAME
+from data import ApplicationConstants
 
 
 class TestRegistration:
@@ -7,15 +7,18 @@ class TestRegistration:
 
         assert desk_page.is_authorized() is True
 
+    def test_user_profile_has_default_name(self, desk_page, user_credentials):
+        desk_page.register_user(user_credentials["email"], user_credentials["password"])
         desk_page.open_profile()
 
-        assert desk_page.get_profile_name() == DEFAULT_USER_NAME
+        assert desk_page.get_profile_name() == ApplicationConstants.DEFAULT_USER_NAME
 
     def test_user_cannot_register_with_invalid_email(self, desk_page):
         initial_colors, error_colors = desk_page.submit_invalid_registration("invalid-email")
-
-        assert desk_page.get_email_error_text() == "Ошибка"
-
+        # Проверяем, что появилось сообщение об ошибке
+        error_text = desk_page.get_registration_error_text()
+        assert error_text is not None and "ошиб" in error_text.lower()
+        # Для отладки оставим проверку цвета, но не как основной assert
         assert desk_page.are_registration_fields_highlighted(initial_colors, error_colors) is True
 
     def test_user_cannot_register_existing_account(self, desk_page, user_credentials):
@@ -25,7 +28,6 @@ class TestRegistration:
             user_credentials["email"],
             user_credentials["password"],
         )
-
-        assert desk_page.get_email_error_text() == "Ошибка"
-
+        error_text = desk_page.get_registration_error_text()
+        assert error_text is not None and "ошиб" in error_text.lower()
         assert desk_page.are_registration_fields_highlighted(initial_colors, error_colors) is True

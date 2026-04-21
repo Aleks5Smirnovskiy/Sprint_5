@@ -71,3 +71,9 @@ class BasePage:
         except TimeoutException:
             return False
         return True
+
+    def execute_script(self, script, *args):
+        return self.driver.execute_script(script, *args)
+
+    def get_current_url(self):
+        return self.driver.current_url
