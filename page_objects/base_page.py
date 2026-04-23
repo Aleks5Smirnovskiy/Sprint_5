@@ -3,13 +3,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from data import WAIT_TIMEOUT
+from data import Timeouts
 
 
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, WAIT_TIMEOUT)
+        self.wait = WebDriverWait(driver, Timeouts.WAIT_TIMEOUT)
 
     def open(self, url):
         self.driver.get(url)

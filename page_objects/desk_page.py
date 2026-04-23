@@ -6,7 +6,7 @@ from locators import (
     ProfilePageLocators,
 )
 from page_objects.base_page import BasePage
-from data import BASE_URL
+from data import Urls, UserData
 
 
 class DeskPage(BasePage):
@@ -17,7 +17,7 @@ class DeskPage(BasePage):
         except Exception:
             return None
     def open_home_page(self):
-        self.open(BASE_URL)
+        self.open(Urls.BASE_URL)
 
     def open_login_popup(self):
         self.open_home_page()
@@ -47,7 +47,7 @@ class DeskPage(BasePage):
     def submit_invalid_registration(self, email):
         self.open_registration_popup()
         initial_colors = self.get_registration_border_colors()
-        self.fill_registration_form(email, "Password123!")
+        self.fill_registration_form(email, UserData.DEFAULT_PASSWORD)
         self.click(AuthPopupLocators.REGISTER_SUBMIT_BUTTON)
         return initial_colors, self.get_registration_border_colors()
 
@@ -131,9 +131,6 @@ class DeskPage(BasePage):
         }
 
     def are_registration_fields_highlighted(self, initial_colors, error_colors):
-        print(f"Initial colors: {initial_colors}")
-        print(f"Error colors: {error_colors}")
-        # Считаем, что поле подсвечено, если цвет изменился хотя бы у одного поля
         return any(error_colors[field] != initial_colors[field] for field in error_colors)
 
     def is_authorized(self):

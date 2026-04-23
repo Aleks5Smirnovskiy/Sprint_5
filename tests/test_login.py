@@ -1,4 +1,4 @@
-from data import ApplicationConstants
+from data import UserData
 
 
 class TestLogin:
@@ -9,4 +9,4 @@ class TestLogin:
         )
         desk_page.open_profile()
 
-        assert desk_page.get_profile_name() == ApplicationConstants.DEFAULT_USER_NAME
+        assert desk_page.get_profile_name() == UserData.DEFAULT_USER_NAME

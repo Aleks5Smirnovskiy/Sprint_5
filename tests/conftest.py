@@ -23,23 +23,20 @@ def desk_page(driver):
 
 
 @pytest.fixture
-def user_credentials():
-    return build_user_credentials()
+def registered_user(desk_page):
+    credentials = build_user_credentials()
+    desk_page.register_user(credentials["email"], credentials["password"])
+    return credentials
 
 
 @pytest.fixture
-def registered_user(desk_page, user_credentials):
-    desk_page.register_user(user_credentials["email"], user_credentials["password"])
-    return user_credentials
-
-
-@pytest.fixture
-def logged_out_registered_user(desk_page, user_credentials):
-    desk_page.register_user(user_credentials["email"], user_credentials["password"])
+def logged_out_registered_user(desk_page):
+    credentials = build_user_credentials()
+    desk_page.register_user(credentials["email"], credentials["password"])
     desk_page.logout()
-    return user_credentials
+    return credentials
 
 
 @pytest.fixture
-def listing_payload():
+def listing_data():
     return build_listing_payload()
